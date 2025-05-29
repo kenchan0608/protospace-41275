@@ -4,20 +4,23 @@
       <p class="prototype__hedding">
         <%= @prototype.title %>
       </p>
-       <%= link_to "by #{@prototype.user.name}", user_path(@prototype.user), class: :prototype__user %>
+      <%= link_to "by #{@prototype.user.name}", user_path(@prototype.user), class: :prototype__user %>
+
       <%# プロトタイプの投稿者とログインしているユーザーが同じであれば以下を表示する %>
       <% if user_signed_in? && current_user == @prototype.user %>
         <div class="prototype__manage">
           <%= link_to "編集する", edit_prototype_path(@prototype), class: :prototype__btn %>
-          <%= link_to "削除する", prototype_path(@prototype.id), data: { turbo_method: :delete },class: :prototype__btn %>
+          <%= link_to "削除する", prototype_path(@prototype.id), data: { turbo_method: :delete }, class: :prototype__btn %>
         </div>
-       <% end %>
+      <% end %>
       <%# // プロトタイプの投稿者とログインしているユーザーが同じであれば上記を表示する %>
+
       <div class="prototype__image">
         <% if @prototype.image.attached? %>
-         <%= image_tag url_for(@prototype.image), class: :prototype__img %>
-       <% end %>
-     </div>
+          <%= image_tag url_for(@prototype.image), class: :prototype__img %>
+        <% end %>
+      </div>
+
       <div class="prototype__body">
         <div class="prototype__detail">
           <p class="detail__title">キャッチコピー</p>
@@ -32,7 +35,8 @@
           </p>
         </div>
       </div>
-     <div class="prototype__comments">
+
+      <div class="prototype__comments">
         <%# コメント投稿フォーム %>
         <% if user_signed_in? %>
           <%= form_with(model: [@prototype, @comment], local: true) do |f| %>
@@ -50,7 +54,11 @@
           <% @comments.each do |comment| %>
             <li class="comments_list">
               <%= comment.content %>
-              <%= link_to "（#{comment.user.name}）", user_path, class: :comment_user %>
+              <% if comment.user.present? %>
+                <%= link_to "（#{comment.user.name}）", user_path(comment.user), class: :comment_user %>
+              <% else %>
+                <span>（ゲスト）</span>
+              <% end %>
             </li>
           <% end %>
         </ul>
